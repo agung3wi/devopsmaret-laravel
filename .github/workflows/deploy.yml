@@ -1,0 +1,29 @@
+name: Laravel
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Deploy
+        env:
+          dest: "ubuntu@44.202.114.4:~/dev.kelasdevops.xyz/"
+        run: |
+          echo "${{secrets.DEPLOY_KEY}}" > ~/deploy_key
+          chmod 600 ~/deploy_key
+          rsync -avz --delete \
+            -e 'ssh -i ~/deploy_key -o StrictHostKeyChecking=no' \
+            --exclude ~/deploy_key \
+            --exclude .git/ \
+            --exclude .github/ \
+            --exclude storage/ \
+            --exclude .env \ \
+            ./ ${{env.dest}}
+          ssh -i ~/deploy_key ubuntu@44.202.114.4 'cd ~/dev.kelasdevops.xyz/ && composer install'
