@@ -53,7 +53,7 @@ Route::get('/bootstrap', function () {
 });
 
 Route::get('/greeting', function () {
-    return 'Hello World';
+    return 'Hello World!';
 });
 
 Route::get('/keluhan', [KeluhanController::class, 'index']);
